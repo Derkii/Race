@@ -1,21 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraRotater : MonoBehaviour
 {
-    private CarControls _controls;
-    [SerializeField]
-    public float _moveSpeed;
-    [SerializeField]
-    public float _rotateSpeed;
+    [SerializeField] public float _moveSpeed;
+
+    [SerializeField] public float _rotateSpeed;
+
+    [SerializeField] private float _additionMoveSpeed, _additionRotateSpeed;
+
+    [SerializeField] private float _minMoveSpeed, _maxMoveSpeed, _minRotateSpeed, _maxRotateSpeed;
+
     private Camera _camera;
+    private CarControls _controls;
     private bool _isRotating;
-    [SerializeField]
-    private float _additionMoveSpeed, _additionRotateSpeed;
-    [SerializeField]
-    private float _minMoveSpeed, _maxMoveSpeed, _minRotateSpeed, _maxRotateSpeed;
+
+    private void Start()
+    {
+        _camera = Camera.main;
+    }
+
+    private void Update()
+    {
+        Rotation();
+        _moveSpeed = Mathf.Clamp(_moveSpeed, _minMoveSpeed, _maxMoveSpeed);
+        _rotateSpeed = Mathf.Clamp(_rotateSpeed, _minRotateSpeed, _maxRotateSpeed);
+        if (Input.GetKey(KeyCode.Equals)) _moveSpeed += _additionMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.Minus)) _moveSpeed -= _additionMoveSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.Q)) _rotateSpeed += _additionRotateSpeed * Time.deltaTime;
+        if (Input.GetKey(KeyCode.R)) _rotateSpeed -= _additionRotateSpeed * Time.deltaTime;
+    }
 
     private void OnEnable()
     {
@@ -29,40 +43,10 @@ public class CameraRotater : MonoBehaviour
     {
         var lockCursor = obj.performed;
         _isRotating = lockCursor;
-        if (lockCursor == true)
-        {
+        if (lockCursor)
             Cursor.lockState = CursorLockMode.Locked;
-        }
         else
-        {
             Cursor.lockState = CursorLockMode.None;
-        }
-    }
-    private void Start()
-    {
-        _camera = Camera.main;
-    }
-    private void Update()
-    {
-        Rotation();
-        _moveSpeed = Mathf.Clamp(_moveSpeed, _minMoveSpeed, _maxMoveSpeed);
-        _rotateSpeed = Mathf.Clamp(_rotateSpeed, _minRotateSpeed, _maxRotateSpeed);
-        if (Input.GetKey(KeyCode.Equals))
-        {
-            _moveSpeed += _additionMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.Minus))
-        {
-            _moveSpeed -= _additionMoveSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.Q))
-        {
-            _rotateSpeed += _additionRotateSpeed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.R))
-        {
-            _rotateSpeed -= _additionRotateSpeed * Time.deltaTime;
-        }
     }
 
     private void Rotation()

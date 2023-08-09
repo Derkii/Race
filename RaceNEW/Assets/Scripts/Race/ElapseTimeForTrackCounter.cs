@@ -5,8 +5,8 @@ namespace Cars
 {
     public class ElapseTimeForTrackCounter : MonoBehaviour
     {
-        public static float ElapsedTimeForCurrentTrack { get; private set; }
         public static bool Enabled;
+        public static float ElapsedTimeForCurrentTrack { get; private set; }
 
         private void Start()
         {

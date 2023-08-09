@@ -7,6 +7,11 @@ namespace Cars
     {
         public Action<IFinishReactable> OnFinishAction;
 
+        public void OnDestroy()
+        {
+            OnFinishAction = null;
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (!collision.gameObject.TryGetComponent(out IFinishReactable finishReactable))
@@ -19,14 +24,9 @@ namespace Cars
                 }
             }
 
-            finishReactable.OnFinish(this);
+            finishReactable.OnFinish();
             OnFinishAction.Invoke(finishReactable);
             ElapseTimeForTrackCounter.Enabled = false;
-        }
-
-        public void OnDestroy()
-        {
-            OnFinishAction = null;
         }
     }
 }

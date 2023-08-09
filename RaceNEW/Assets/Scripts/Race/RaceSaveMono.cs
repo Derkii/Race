@@ -27,27 +27,18 @@ namespace Save
             _resetButton.onClick.AddListener(() =>
             {
                 RaceSaveManager.ResetRaces();
-                foreach (var text in _texts)
-                {
-                    text.text = string.Empty;
-                }
+                foreach (var text in _texts) text.text = string.Empty;
             });
             _saveButton.onClick.AddListener(() =>
             {
                 var race = CreateRace();
-                if (_saved)
-                {
-                    return;
-                }
+                if (_saved) return;
 
                 RaceSaveManager.AddRace(race);
                 RaceSaveManager.Save();
                 _texts.First(t => t.text == string.Empty).text = RaceToString(race);
             });
-            foreach (var item in _texts)
-            {
-                item.text = string.Empty;
-            }
+            foreach (var item in _texts) item.text = string.Empty;
 
             if (_texts.Length <= RaceSaveManager.RaceDatasCount)
             {
@@ -55,27 +46,32 @@ namespace Save
                     t.ElapsedTimeForTrack == RaceSaveManager.Races.Max(t => t.ElapsedTimeForTrack)).Index);
             }
 
-            for (int i = 0; i < RaceSaveManager.RaceDatasCount; i++)
+            for (var i = 0; i < RaceSaveManager.RaceDatasCount; i++)
             {
-                var race = RaceSaveManager.GetRaceDataByIndex(i);
+                var race = RaceSaveManager.GetRaceByIndex(i);
 
                 _texts[i].text = RaceToString(race);
             }
         }
-
-        private string RaceToString(RaceData race) =>
-            $"Race by index {race.Index + 1} and by name {race.Name} has finsihed track in {race.ElapsedTimeForTrack}";
 
         private void OnApplicationQuit()
         {
             RaceSaveManager.Save();
         }
 
-        public RaceData CreateRace() => new()
+        private string RaceToString(RaceData race)
         {
-            ElapsedTimeForTrack = ElapseTimeForTrackCounter.ElapsedTimeForCurrentTrack,
-            Name = PlayerPrefs.GetString(FindObjectOfType<FinishPanelManager>().PlayerPrefsPathToRaceName),
-            Index = RaceSaveManager.RaceDatasCount
-        };
+            return
+                $"Race by index {race.Index + 1} and by name {race.Name} has finished track in {race.ElapsedTimeForTrack}";
+        }
+
+        private RaceData CreateRace()
+        {
+            return new RaceData
+            {
+                ElapsedTimeForTrack = ElapseTimeForTrackCounter.ElapsedTimeForCurrentTrack,
+                Name = PlayerPrefs.GetString(FinishPanelManager.PlayerPrefsPathToRaceName)
+            };
+        }
     }
 }

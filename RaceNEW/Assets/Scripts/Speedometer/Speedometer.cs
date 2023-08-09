@@ -7,22 +7,21 @@ namespace Cars
 {
     public class Speedometer : MonoBehaviour
     {
-        private CarComponent _car;
-
         private const float c_convertMeterInSecFromRmInH = 3.6f;
 
         [SerializeField] private float _maxSpeed = 300f;
         [SerializeField] private Color _minColor = Color.yellow;
         [SerializeField] private Color _maxColor = Color.red;
         [SerializeField] private TextMeshProUGUI _speedInKmsText, _spendTimeForTrackText;
-        [SerializeField, Range(0.1f, 1f)] private float _delay = 0.3f;
+        [SerializeField] [Range(0.1f, 1f)] private float _delay = 0.3f;
+        private CarComponent _car;
 
         private void Start()
         {
             _car = FindObjectOfType<CarComponent>();
             StartCoroutine(SpeedTest());
             var finish = FindObjectOfType<Finish>();
-            finish.OnFinishAction += (t) =>
+            finish.OnFinishAction += t =>
             {
                 Destroy(_speedInKmsText.gameObject);
                 Destroy(this);
